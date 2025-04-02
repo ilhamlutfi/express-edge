@@ -1,0 +1,37 @@
+@layout.template({ title: 'Students' })
+
+@slot('main')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header">Students</div>
+
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @each((item, index) in students)
+                                <tr>
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ item.name }}</td>   
+                                    <td>{{ item.age }}</td>   
+                                </tr>
+                            @end
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endslot
+
+@end
