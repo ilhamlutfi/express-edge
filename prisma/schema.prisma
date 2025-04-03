@@ -13,3 +13,12 @@ model User {
   email String @unique
   createdAt DateTime @default(now())
 }
+
+model Student {
+  id    Int    @id @default(autoincrement())
+  name  String
+  age   Int
+  email String @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
