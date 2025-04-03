@@ -1,0 +1,42 @@
+@layout.template({ title: `Show student: ${student.id}`})
+    @slot('main')
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header">Show student id: {{ student.id }}</div>
+        
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th>Name</th>
+                                    <td>{{ student.name}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Age</th>
+                                    <td>{{ student.age}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td>{{ student.email}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Created At</th>
+                                    <td>{{ student.createdAt }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Updated At</th>
+                                    <td>{{ student.updatedAt }}</td>
+                                </tr>
+                            </table>
+
+                            <div class="d-flex justify-content-end">
+                                <a href="/students" class="btn btn-secondary">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endslot
+@end

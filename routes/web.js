@@ -8,6 +8,9 @@ const router = express.Router();
 router.get('/', HomeController.index);
 router.route('/students')
     .get(StudentController.index) // Get all students
+router.route('/students/:id')
+    .get(StudentController.show) // Get a student by ID
+    .delete(StudentController.delete) // Delete a student by ID
 
 export default router;
 
