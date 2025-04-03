@@ -18,7 +18,8 @@ export default class StudentController {
                 orderBy: {
                     id: 'desc'
                 }
-            })
+            }),
+            csrfToken: res.locals.csrfToken
         }
 
         const html = await edge.render('students/index', data);
