@@ -25,7 +25,7 @@ app.use(express.urlencoded({
 })); // for parsing application/x-www-form-urlencoded
 app.use(cookieParser()); // for parsing cookies
 
-// ✅ Middleware CSRF agar token selalu tersedia di views
+// ✅ Middleware CSRF agar token tersedia di views
 app.use(generateCsrfToken);
 
 // ✅ Middleware CSRF untuk validasi sebelum request DELETE, POST, dan PUT
