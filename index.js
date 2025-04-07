@@ -10,6 +10,8 @@ import {
     generateCsrfToken,
     verifyCsrfToken
 } from './app/helpers/csrf.js';
+import session from 'express-session';
+import flash from 'connect-flash';
 
 dotenv.config();
 
@@ -35,6 +37,13 @@ app.use((req, res, next) => {
     }
     next();
 });
+
+app.use(session({
+    secret: 'secret-key',
+    resave: false,
+    saveUninitialized: true
+})); // Session middleware
+app.use(flash()); // Flash middleware
 
 app.use(router);
 

@@ -5,8 +5,18 @@
                 <div class="col-md-8">
                     <div class="card shadow-sm">
                         <div class="card-header">Edit student id: {{ student.id }}</div>
-        
+                        
                         <div class="card-body">
+                            @if(errors.length > 0)
+                                <div class="alert alert-danger" role="alert">
+                                    <ul class="mb-0">
+                                        @each(error in errors)
+                                            <li>{{ error.msg }}</li>
+                                        @endeach
+                                    </ul>
+                                </div>
+                            @endif
+
                             <form action="/students/{{ student.id }}?_method=PUT" method="post" id="edit-student">
                                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                                 <div class="mb-3">

@@ -10,11 +10,11 @@ export default class StudentController {
     static async index(req, res) {
         const data = {
             students: await StudentService.getAll(),
-            csrfToken: res.locals.csrfToken
+            csrfToken: res.locals.csrfToken,
+            success: req.flash('success')[0] ?? null,
         };
 
-        const html = await edge.render('students/index', data);
-        res.send(html);
+        return res.send(await edge.render('students/index', data));
     }
 
     static async show(req, res) {
@@ -29,10 +29,9 @@ export default class StudentController {
                 return res.send(`<h1>Student not found, id: ${studentId}</h1>`);
             }
 
-            const html = await edge.render('students/show', {
+            return res.send(await edge.render('students/show', {
                 student
-            });
-            res.send(html);
+            }));
         } catch (error) {
             return res.send(`<h1>${error.message}</h1>`);
         }
@@ -51,9 +50,11 @@ export default class StudentController {
                 return res.send(`<h1>Student not found, id:${studentId}</h1>`);
             }
 
-            res.send(await edge.render('students/edit', {
+            return res.send(await edge.render('students/edit', {
                 student: data.student,
-                csrfToken: data.csrfToken
+                csrfToken: data.csrfToken,
+                errors: req.flash('errors'),
+                old: req.flash('old')
             }));
         } catch (error) {
             return res.send(`<h1>${error.message}</h1>`);
@@ -62,23 +63,22 @@ export default class StudentController {
 
     static async update(req, res) {
         try {
+            const studentId = parseInt(req.params.id);
+
             const errors = await RequestValidator.validate(req, StudentRequest.rules());
 
             if (errors) {
-                return res.status(422).json({
-                    status: 'validation_failed',
-                    message: 'Tolong periksa kembali inputan kamu!',
-                    errors
-                });
+                req.flash('errors', errors);
+                req.flash('old', req.body);
+                return res.redirect(`/students/${studentId}/edit`);
             }
-
-            const studentId = parseInt(req.params.id);
 
             const studentData = req.body;
 
             await StudentService.update(studentId, studentData);
 
-            res.redirect('/students');
+            req.flash('success', 'Student updated successfully!');
+            return res.redirect('/students');
         } catch (error) {
             if (error.code === 'P2025') {
                 return res.send(`<h1>${error.meta?.cause || error.message}</h1>`);
@@ -95,7 +95,7 @@ export default class StudentController {
             // delete have default behavior to throw an error if the record is not found
             await StudentService.delete(studentId);
 
-            res.redirect('/students');
+            return res.redirect('/students');
         } catch (error) {
             // Handle the case where the student is not found or another error occurs
             if (error.code === 'P2025') {

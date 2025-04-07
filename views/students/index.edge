@@ -8,6 +8,11 @@
                 <div class="card-header">Students</div>
 
                 <div class="card-body">
+                    @if(success)
+                        <div class="alert alert-success" role="alert">
+                            {{ success }}
+                        </div>
+                    @endif
                     <table class="table table-bordered table-striped">
                         <thead>
                             <tr>
