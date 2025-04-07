@@ -8,6 +8,8 @@ const router = express.Router();
 router.get('/', HomeController.index);
 router.route('/students')
     .get(StudentController.index) // Get all students
+    .post(StudentController.store) // Store a student
+router.get('/students/create', StudentController.create) // Create a student
 router.route('/students/:id')
     .get(StudentController.show) // Get a student by ID
     .put(StudentController.update) // Update a student by ID

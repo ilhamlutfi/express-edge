@@ -21,15 +21,15 @@
                                 <input type="hidden" name="_csrf" value="{{ csrfToken }}">
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" value="{{ student.name }}">
+                                    <input type="text" class="form-control" id="name" name="name" value="{{ old?.name || student.name  }}"> 
                                 </div>
                                 <div class="mb-3">
                                     <label for="age" class="form-label">Age</label>
-                                    <input type="number" class="form-control" id="age" name="age" value="{{ student.age }}">
+                                    <input type="number" class="form-control" id="age" name="age" value="{{ old?.age || student.age }}">
                                 </div>
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="{{ student.email }}">
+                                    <input type="email" class="form-control" id="email" name="email" value="{{ old?.email || student.email }}">
                                 </div>
                             </form>
                             <div class="d-flex justify-content-end">

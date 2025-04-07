@@ -37,6 +37,23 @@ export default class StudentController {
         }
     }
 
+    static async create(req, res) {
+        try {
+            return res.send(await edge.render('students/create', {
+                csrfToken: res.locals.csrfToken,
+                errors: req.flash('errors'),
+                old: req.flash('old')[0] ?? {}
+            }));
+        } catch (error) {
+            return res.send(`<h1>${error.message}</h1>`); 
+        }
+    }
+
+    static async store(req, res) {
+        console.log(req.body);
+        return res.send('ok');
+    }
+
     static async edit(req, res) {
         try {
             const studentId = parseInt(req.params.id);
@@ -54,7 +71,7 @@ export default class StudentController {
                 student: data.student,
                 csrfToken: data.csrfToken,
                 errors: req.flash('errors'),
-                old: req.flash('old')
+                old: req.flash('old')[0] ?? {}
             }));
         } catch (error) {
             return res.send(`<h1>${error.message}</h1>`);
@@ -95,6 +112,7 @@ export default class StudentController {
             // delete have default behavior to throw an error if the record is not found
             await StudentService.delete(studentId);
 
+            req.flash('success', 'Student deleted successfully!');
             return res.redirect('/students');
         } catch (error) {
             // Handle the case where the student is not found or another error occurs
