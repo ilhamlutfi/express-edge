@@ -1,3 +1,4 @@
+import { parse } from "dotenv";
 import prisma from "../helpers/prisma.js";
 
 export default class StudentService {
@@ -23,6 +24,19 @@ export default class StudentService {
                 id: Number(id)
             }
         });
+    }
+
+    static async update(id, data) {
+        return await prisma.student.update({
+            where: {
+                id: Number(id)
+            },
+            data: {
+                name: data.name,
+                age: parseInt(data.age),
+                email: data.email
+            }
+        })
     }
 
     static async delete(id) {

@@ -1,7 +1,9 @@
 import {
     edge
 } from "../../index.js";
-
+import StudentRequest from "../requests/StudentRequest.js";
+import { validationResult } from "express-validator";
+import RequestValidator from "../helpers/validator.js";
 import StudentService from "../service/StudentService.js";
 
 export default class StudentController {
@@ -59,8 +61,31 @@ export default class StudentController {
     }
 
     static async update(req, res) {
-        console.log(req.body);
-        return '<pre>' + JSON.stringify(req.body, null, 2) + '</pre>';
+        try {
+            const errors = await RequestValidator.validate(req, StudentRequest.rules());
+
+            if (errors) {
+                return res.status(422).json({
+                    status: 'validation_failed',
+                    message: 'Tolong periksa kembali inputan kamu!',
+                    errors
+                });
+            }
+
+            const studentId = parseInt(req.params.id);
+
+            const studentData = req.body;
+
+            await StudentService.update(studentId, studentData);
+
+            res.redirect('/students');
+        } catch (error) {
+            if (error.code === 'P2025') {
+                return res.send(`<h1>${error.meta?.cause || error.message}</h1>`);
+            }
+
+            return res.send(`<h1>${error.message}</h1>`);
+        }
     }
 
     static async delete(req, res) {
@@ -74,7 +99,7 @@ export default class StudentController {
         } catch (error) {
             // Handle the case where the student is not found or another error occurs
             if (error.code === 'P2025') {
-                return res.send(`<h1>Student not found, id: ${req.params.id}</h1>`);
+                return res.send(`<h1>${error.meta?.cause || error.message}</h1>`);
             }
             return res.send(`<h1>${error.message}</h1>`);
         }
