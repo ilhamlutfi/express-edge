@@ -50,8 +50,23 @@ export default class StudentController {
     }
 
     static async store(req, res) {
-        console.log(req.body);
-        return res.send('ok');
+        try {
+            const errors = await RequestValidator.validate(req, StudentRequest.rules());
+
+            if (errors) {
+                req.flash('errors', errors);
+                req.flash('old', req.body);
+                return res.redirect('/students/create');
+            }
+
+            const studentData = req.body;
+            await StudentService.create(studentData);
+            
+            req.flash('success', 'Student created successfully!');
+            return res.redirect('/students');
+        } catch (error) {
+            return res.send(`<h1>${error.message}</h1>`)
+        }
     }
 
     static async edit(req, res) {
