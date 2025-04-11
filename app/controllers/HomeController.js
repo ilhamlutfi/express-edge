@@ -6,6 +6,6 @@ export default class HomeController {
             title: 'Welcome to Edge.js with Express'
         };
         const html = await edge.render('home/index', data);
-        res.send(html);
+        return res.send(html);
     }
 }

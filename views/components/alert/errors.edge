@@ -1,0 +1,9 @@
+@if(errors.length > 0)
+<div class="alert alert-danger" role="alert">
+    <ul class="mb-0">
+        @each(error in errors)
+        <li>{{ error.msg }}</li>
+        @endeach
+    </ul>
+</div>
+@endif

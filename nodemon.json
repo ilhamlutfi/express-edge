@@ -1,5 +1,4 @@
 {
-  "watch": ["app", "views", "routes"],
   "ignore": ["node_modules", "public", "logs", "uploads"],
   "ext": "js,json,edge",
   "exec": "node index.js",
