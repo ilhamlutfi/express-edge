@@ -11,7 +11,7 @@
                     @!component('components/alert/errors', { errors: errors })
                     
                     <form action="/register" method="post">
-                        @!component('components/csrf-input', { csrfToken: csrfToken })
+                        @include('components/csrf-input')
 
                         <div class="mb-3">
                             <label for="name">Name</label>

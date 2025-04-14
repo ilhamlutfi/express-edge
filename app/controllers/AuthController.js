@@ -112,5 +112,15 @@ export default class AuthController {
             return res.send(`<h1>${error.message}</h1>`);
         }
     }
+
+    static async logoutAttempt(req, res) {
+        req.session.destroy((err) => {
+            if (err) {
+                return res.send(`<h1>Error occurred during logout:${err.message}</h1>`);
+            }
+        });
+        
+        return res.redirect('/login');
+    }
 }
 

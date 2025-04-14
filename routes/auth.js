@@ -1,6 +1,6 @@
 import express from 'express';
 import AuthController from '../app/controllers/AuthController.js';
-import { isAuthenticated } from '../app/middlewares/AuthMiddleware.js';
+import { isAuthenticated, isNotAuthenticated } from '../app/middlewares/AuthMiddleware.js';
 import rateLimit from 'express-rate-limit';
 
 const authRoutes = express.Router();
@@ -16,6 +16,7 @@ authRoutes.get('/login', isAuthenticated, AuthController.login);
 authRoutes.post('/login', authLimiter, isAuthenticated, AuthController.loginAttempt);
 authRoutes.get('/register', AuthController.register);
 authRoutes.post('/register', authLimiter, AuthController.registerAttempt);
+authRoutes.get('/logout', isNotAuthenticated, AuthController.logoutAttempt);
 
 export default authRoutes;
 

@@ -4,6 +4,7 @@ import router from './routes/web.js';
 import {
     Edge
 } from 'edge.js';
+import path from 'path';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
 import {
@@ -29,6 +30,7 @@ const limiter = rateLimit({
     headers: true, // Menyertakan header rate-limit di response
 });
 
+app.use(express.static(path.resolve('public'))); // Serve static files
 // Terapkan rate limiter di seluruh aplikasi (global)
 app.use(limiter);
 
@@ -61,6 +63,7 @@ app.use(session({
 })); // Session middleware
 app.use(flash()); // Flash middleware
 
+
 app.use(router);
 
 edge.mount(process.cwd() + '/views');
@@ -69,6 +72,8 @@ app.set('views', process.cwd() + '/views');
 
 app.listen(port, () => console.log(`App listening on ${base_url}`));
 
+// global variables
+edge.global('base_url', base_url);
 export {
     edge
 };

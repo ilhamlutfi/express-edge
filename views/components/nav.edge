@@ -1,5 +1,6 @@
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
     <div class="container">
+        <img src="{{ base_url }}/express-logo.png" alt="" width="50">
         <a class="navbar-brand" href="/">
             ExpressJs MVC
         </a>
@@ -24,7 +25,7 @@
             <ul class="navbar-nav ms-auto">
                 @if(session)
                     <li class="nav-item">
-                        <a class="nav-link" href="/login">Logout</a>
+                        <a class="nav-link" href="/logout">Logout</a>
                     </li>
                     <li>
                         <span class="nav-link"><b>{{ session.name }}</b></span>
