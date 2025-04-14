@@ -1,19 +1,16 @@
 import dotenv from 'dotenv';
 import express from 'express';
 import router from './routes/web.js';
-import {
-    Edge
-} from 'edge.js';
+import { Edge } from 'edge.js';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import methodOverride from 'method-override';
-import {
-    generateCsrfToken,
-    verifyCsrfToken
-} from './app/helpers/csrf.js';
+import { generateCsrfToken, verifyCsrfToken } from './app/helpers/csrf.js';
 import session from 'express-session';
+import createMemoryStore from 'memorystore';
 import flash from 'connect-flash';
 import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
 
 dotenv.config();
 
@@ -22,29 +19,41 @@ const edge = Edge.create();
 const port = process.env.PORT || 3000;
 const base_url = `http://localhost:${port}`;
 
-// Rate limiter untuk membatasi 100 permintaan per 15 menit dari setiap IP
+// Rate limiter
 const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 menit
-    max: 100, // Maksimal 100 permintaan per IP dalam 15 menit
+    windowMs: 15 * 60 * 1000,
+    max: 100,
     message: 'Too many requests from this IP, please try again after 15 minutes.',
-    headers: true, // Menyertakan header rate-limit di response
+    headers: true,
 });
 
-app.use(express.static(path.resolve('public'))); // Serve static files
-// Terapkan rate limiter di seluruh aplikasi (global)
+app.use(express.static(path.resolve('public')));
+app.set('trust proxy', 1);
 app.use(limiter);
+app.use(methodOverride("_method"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(helmet());
+app.use(flash());
+app.disable('x-powered-by');
 
-app.use(methodOverride("_method")); // Middleware method spoofing
-app.use(express.json()); // for parsing application/json
-app.use(express.urlencoded({ 
-    extended: true
-})); // for parsing application/x-www-form-urlencoded
-app.use(cookieParser()); // for parsing cookies
+// Session
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: false, // true if https
+        maxAge: 24 * 60 * 60 * 1000
+    },
+    store: new (createMemoryStore(session))({
+        checkPeriod: 43200000 // prune expired entries every 12h
+    }),
+}));
 
-// ✅ Middleware CSRF agar token tersedia di views
+// CSRF
 app.use(generateCsrfToken);
-
-// ✅ Middleware CSRF untuk validasi sebelum request DELETE, POST, dan PUT
 app.use((req, res, next) => {
     if (['POST', 'PUT', 'DELETE'].includes(req.method)) {
         return verifyCsrfToken(req, res, next);
@@ -52,28 +61,26 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(session({
-    secret: 'secret-key',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        secure: false, // Set ke true jika menggunakan HTTPS
-        maxAge: 24 * 60 * 60 * 1000 // Waktu kedaluwarsa sesi 24 jam (24 jam * 60 menit * 60 detik * 1000 milidetik)
-    }
-})); // Session middleware
-app.use(flash()); // Flash middleware
-
-
-app.use(router);
-
+// Template engine
 edge.mount(process.cwd() + '/views');
 app.set('view engine', 'edge');
 app.set('views', process.cwd() + '/views');
+edge.global('base_url', base_url);
+
+// Router
+app.use(router);
+
+// Not found handler (harus di bawah router)
+app.use((req, res, next) => {
+    res.status(404).send('Page not found');
+});
+
+// Error handler (juga di paling akhir)
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send(process.env.NODE_ENV === 'production' ? 'Something went wrong!' : err.message);
+});
 
 app.listen(port, () => console.log(`App listening on ${base_url}`));
 
-// global variables
-edge.global('base_url', base_url);
-export {
-    edge
-};
+export { edge };

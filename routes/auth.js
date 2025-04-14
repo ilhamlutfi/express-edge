@@ -12,8 +12,8 @@ const authLimiter = rateLimit({
     keyGenerator: (req) => req.ip // rate limit berdasarkan IP
 })
 
-authRoutes.get('/login', isAuthenticated, AuthController.login);
-authRoutes.post('/login', authLimiter, isAuthenticated, AuthController.loginAttempt);
+authRoutes.get('/login', AuthController.login);
+authRoutes.post('/login', authLimiter, AuthController.loginAttempt);
 authRoutes.get('/register', AuthController.register);
 authRoutes.post('/register', authLimiter, AuthController.registerAttempt);
 authRoutes.get('/logout', isNotAuthenticated, AuthController.logoutAttempt);
