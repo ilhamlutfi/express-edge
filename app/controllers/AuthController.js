@@ -1,18 +1,12 @@
-import { edge } from '../../index.js';
 import prisma from '../helpers/prisma.js';
 import RequestValidator from '../helpers/validator.js';
+import { render } from '../helpers/view.js';
 import { LoginRequest, RegisterRequest } from '../requests/AuthRequest.js';
 import bcrypt from 'bcrypt';
 
 export default class AuthController {
     static async login(req, res) {
-        const data = {
-            csrfToken: res.locals.csrfToken,
-            errors: req.flash('errors'),
-            old: req.flash('old')[0] ?? {}
-        };
-
-        return res.send(await edge.render('auth/login', data));
+        return await render(req, res, 'auth/login');
     }
 
     static async loginAttempt(req, res) {
@@ -60,11 +54,12 @@ export default class AuthController {
             req.session.user = {
                 id: user.id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
 
             req.flash('success', 'Login successful!');
-            return res.redirect('/students');
+            return res.redirect('/dashboard');
         } catch (error) {
             // Handle the case where is not found or another error occurs
             if (error.code === 'P2025') {
@@ -81,7 +76,7 @@ export default class AuthController {
             old: req.flash('old')[0] ?? {}
         }
 
-        return res.send(await edge.render('auth/register', data));
+        return await render(req, res, 'auth/register', data);
     }
 
     static async registerAttempt(req, res) {

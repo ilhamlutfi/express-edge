@@ -1,10 +1,10 @@
 import express from 'express';
 import StudentController from '../app/controllers/StudentController.js';
-import isAuthenticated from '../app/middlewares/AuthMiddleware.js';
+import { isNotAuthenticated } from '../app/middlewares/AuthMiddleware.js';
 
 const studentRoutes = express.Router();
 
-studentRoutes.use(isAuthenticated) // Middleware for all student routes
+studentRoutes.use(isNotAuthenticated) // Middleware for all student routes
 studentRoutes.route('/students')
     .get(StudentController.index)
     .post(StudentController.store);

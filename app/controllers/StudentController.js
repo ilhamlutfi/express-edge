@@ -1,20 +1,15 @@
-import {
-    edge
-} from "../../index.js";
 import StudentRequest from "../requests/StudentRequest.js";
-import { validationResult } from "express-validator";
 import RequestValidator from "../helpers/validator.js";
 import StudentService from "../service/StudentService.js";
+import { render } from "../helpers/view.js";
 
 export default class StudentController {
     static async index(req, res) {
         const data = {
             students: await StudentService.getAll(),
-            csrfToken: res.locals.csrfToken,
-            success: req.flash('success')[0] ?? null,
         };
 
-        return res.send(await edge.render('students/index', data));
+        return await render(req, res, 'students/index', data);
     }
 
     static async show(req, res) {
@@ -29,9 +24,7 @@ export default class StudentController {
                 return res.send(`<h1>Student not found, id: ${studentId}</h1>`);
             }
 
-            return res.send(await edge.render('students/show', {
-                student
-            }));
+           return await render(req, res, 'students/show', { student });
         } catch (error) {
             return res.send(`<h1>${error.message}</h1>`);
         }
@@ -39,11 +32,7 @@ export default class StudentController {
 
     static async create(req, res) {
         try {
-            return res.send(await edge.render('students/create', {
-                csrfToken: res.locals.csrfToken,
-                errors: req.flash('errors'),
-                old: req.flash('old')[0] ?? {}
-            }));
+            return await render(req, res, 'students/create');
         } catch (error) {
             return res.send(`<h1>${error.message}</h1>`); 
         }
@@ -82,12 +71,7 @@ export default class StudentController {
                 return res.send(`<h1>Student not found, id:${studentId}</h1>`);
             }
 
-            return res.send(await edge.render('students/edit', {
-                student: data.student,
-                csrfToken: data.csrfToken,
-                errors: req.flash('errors'),
-                old: req.flash('old')[0] ?? {}
-            }));
+            return await render(req, res, 'students/edit', data);
         } catch (error) {
             return res.send(`<h1>${error.message}</h1>`);
         }

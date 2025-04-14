@@ -1,4 +1,4 @@
-@layout.template({ title: `Show student: ${student.id}`})
+@layout.template({ title: `Show student: ${student.id}`, session: session?.user ?? [],})
     @slot('main')
         <div class="container">
             <div class="row justify-content-center">

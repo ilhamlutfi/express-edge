@@ -41,7 +41,10 @@ app.use((req, res, next) => {
 app.use(session({
     secret: 'secret-key',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    cookie: {
+        secure: false // Set to true if using HTTPS
+    }
 })); // Session middleware
 app.use(flash()); // Flash middleware
 
