@@ -12,14 +12,22 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <!-- login menu -->
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/dashboard">Dashboards</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/students">Students</a>
-                </li>
-            </ul>
+            @if(session)
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dashboard">Dashboards</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/students">Students</a>
+                    </li>
+                </ul>
+            @else
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/home">Home</a>
+                    </li>
+                </ul>
+            @end
 
             <!-- guest menu -->
             <ul class="navbar-nav ms-auto">
