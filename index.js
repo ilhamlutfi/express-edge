@@ -17,7 +17,7 @@ dotenv.config();
 const app = express();
 const edge = Edge.create();
 const port = process.env.PORT || 3000;
-const base_url = `http://localhost:${port}`;
+const base_url = process.env.BASE_URL;
 
 // Rate limiter
 const limiter = rateLimit({

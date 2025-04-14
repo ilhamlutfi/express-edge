@@ -18,6 +18,10 @@ export default class StudentService {
     }
     
     static async getSingle(id) {
+        if (!id || isNaN(Number(id))) {
+            throw new Error("Invalid ID");
+        }
+        
         return await prisma.student.findUnique({
             where: {
                 id: Number(id)
